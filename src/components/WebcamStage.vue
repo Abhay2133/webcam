@@ -27,7 +27,8 @@ const {
   startRecording,
   stopRecording,
   downloadRecording,
-  recordedBlobUrl
+  recordedBlobUrl,
+  resetRecording
 } = useRecorder(stream);
 
 // Track stream readiness
