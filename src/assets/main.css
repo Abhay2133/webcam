@@ -1,0 +1,81 @@
+:root {
+  /* ChatGPT-like Light Theme */
+  --bg-color: #ffffff;
+  --surface-color: #f7f7f8;
+  --text-color: #343541;
+  --text-muted: #6e6e80;
+  --primary-color: #10a37f;
+  /* Open AI Green-ish */
+  --danger-color: #ef4444;
+  --overlay-bg: rgba(255, 255, 255, 0.9);
+  --overlay-text: #343541;
+}
+
+[data-theme="dark"] {
+  /* ChatGPT-like Dark Theme */
+  --bg-color: #343541;
+  --surface-color: #444654;
+  --text-color: #ececf1;
+  --text-muted: #c5c5d2;
+  --primary-color: #10a37f;
+  --danger-color: #ef4444;
+  --overlay-bg: rgba(52, 53, 65, 0.9);
+  --overlay-text: #ececf1;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Söhne', 'Segoe UI', Helvetica, sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
+  overflow: hidden;
+  /* Prevent scrolling */
+  width: 100vw;
+  height: 100vh;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+
+/* Animations */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  50% {
+    transform: scale(1.2);
+    opacity: 0.7;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Mobile Responsiveness Overrides */
+@media (max-width: 768px) {
+  :root {
+    --header-height: 56px;
+  }
+  
+  body {
+    font-size: 14px;
+  }
+  
+  h1 {
+    font-size: 1.1rem !important;
+  }
+}
