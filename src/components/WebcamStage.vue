@@ -18,7 +18,8 @@ const {
   toggleMirror,
   isMuted,
   toggleMute,
-  isRetrying
+  isRetrying,
+  takeSnapshot
 } = useCamera();
 
 const {
@@ -50,6 +51,27 @@ watch(stream, (newStream) => {
   }
 });
 
+const isFlashing = ref(false);
+
+const handleSnapshot = () => {
+  if (!videoElement.value) return;
+
+  const dataUrl = takeSnapshot(videoElement.value);
+  if (dataUrl) {
+    // Flash effect
+    isFlashing.value = true;
+    setTimeout(() => {
+      isFlashing.value = false;
+    }, 150);
+
+    // Download
+    const link = document.createElement('a');
+    link.href = dataUrl;
+    link.download = `snapshot-${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.png`;
+    link.click();
+  }
+};
+
 const handleReset = () => {
   resetRecording();
 };
@@ -76,6 +98,9 @@ const dismissError = () => {
         playsinline
         :class="{ mirrored: isMirrored, hidden: recordedBlobUrl }"
       ></video>
+
+      <!-- Flash Overlay -->
+      <div v-if="isFlashing" class="flash-overlay"></div>
 
       <!-- Playback Video -->
       <video 
@@ -106,6 +131,7 @@ const dismissError = () => {
         @download="downloadRecording"
         @reset="handleReset"
         @toggle-mirror="toggleMirror"
+        @snapshot="handleSnapshot"
       />
     </div>
   </div>
@@ -151,6 +177,17 @@ video {
 
 .hidden {
   display: none;
+}
+
+.flash-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: white;
+  z-index: 50;
+  pointer-events: none;
 }
 
 .error-message {

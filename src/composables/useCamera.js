@@ -81,6 +81,23 @@ export function useCamera() {
     }
   };
 
+  const takeSnapshot = (videoElement) => {
+    if (!videoElement) return null;
+
+    const canvas = document.createElement('canvas');
+    canvas.width = videoElement.videoWidth;
+    canvas.height = videoElement.videoHeight;
+    const ctx = canvas.getContext('2d');
+
+    if (isMirrored.value) {
+      ctx.translate(canvas.width, 0);
+      ctx.scale(-1, 1);
+    }
+
+    ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+    return canvas.toDataURL('image/png');
+  };
+
   return {
     stream,
     error,
@@ -90,6 +107,7 @@ export function useCamera() {
     initCamera,
     stopCamera,
     toggleMirror,
-    toggleMute
+    toggleMute,
+    takeSnapshot
   };
 }

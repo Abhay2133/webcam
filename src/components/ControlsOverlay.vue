@@ -22,7 +22,8 @@ const emit = defineEmits([
   'stop', 
   'download', 
   'reset', 
-  'toggle-mirror'
+  'toggle-mirror',
+  'snapshot'
 ]);
 
 </script>
@@ -40,6 +41,18 @@ const emit = defineEmits([
       >
         <FlipHorizontal :size="24" />
         <span class="label">Mirror</span>
+      </button>
+
+      <!-- Snapshot -->
+      <button 
+        v-if="!recordedBlobUrl"
+        @click="$emit('snapshot')" 
+        class="ctrl-btn secondary" 
+        :disabled="!streamReady"
+        title="Take Photo"
+      >
+        <Camera :size="24" />
+        <span class="label">Snapshot</span>
       </button>
 
       <!-- Recording Controls -->
@@ -152,8 +165,12 @@ const emit = defineEmits([
 
 /* Hover States */
 .ctrl-btn:hover {
-  background: rgba(0,0,0,0.05);
   transform: scale(1.05);
+}
+
+.ctrl-btn.secondary:hover,
+.ctrl-btn:hover:not(.primary):not(.danger) {
+  background: rgba(0,0,0,0.05);
 }
 
 /* Variants */
@@ -162,7 +179,6 @@ const emit = defineEmits([
   color: var(--bg-color);
 }
 .ctrl-btn.primary:hover {
-  background: var(--text-color);
   opacity: 0.9;
 }
 
@@ -172,6 +188,7 @@ const emit = defineEmits([
 }
 .ctrl-btn.danger:hover {
   opacity: 0.9;
+  background: var(--danger-color);
 }
 
 .ctrl-btn.secondary {
