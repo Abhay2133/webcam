@@ -26,11 +26,11 @@ const {
   recordedBlobUrl
 } = useRecorder(stream);
 
+const streamReady = computed(() => !!stream.value);
+const showError = ref(true);
+
 // Visualizer logic (active when stream is ready)
 const { volume, frequencyData } = useAudioVisualizer(stream, streamReady);
-
-const showError = ref(true);
-const streamReady = computed(() => !!stream.value);
 
 onMounted(async () => {
   await initCamera();
