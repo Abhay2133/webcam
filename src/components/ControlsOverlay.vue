@@ -59,10 +59,10 @@ const emit = defineEmits([
       <button 
         v-if="!isRecording && !recordedBlobUrl" 
         @click="$emit('start')" 
-        class="ctrl-btn primary"
+        class="ctrl-btn primary bg-transparent bdr"
         :disabled="!streamReady"
       >
-        <Circle :size="24" fill="currentColor" />
+        <Circle :size="24" fill="red" />
         <span class="label">Record</span>
       </button>
 
@@ -178,6 +178,15 @@ const emit = defineEmits([
   background: var(--text-color);
   color: var(--bg-color);
 }
+
+.bg-transparent {
+  background: transparent !important;
+}
+
+.bdr{
+  border: 1px solid rgba(125,125,125,0.3);
+}
+
 .ctrl-btn.primary:hover {
   opacity: 0.9;
 }
@@ -219,7 +228,7 @@ const emit = defineEmits([
 /* Dark Mode Adjustments */
 @media (prefers-color-scheme: dark) {
   .ctrl-btn:hover {
-    background: rgba(255,255,255,0.1);
+    background: #00000033;
   }
 }
 </style>
