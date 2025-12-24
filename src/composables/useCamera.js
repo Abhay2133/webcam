@@ -5,6 +5,8 @@ export function useCamera() {
   const error = ref(null);
   const isMirrored = ref(true); // Default to mirrored for webcam as requested
   const isMuted = ref(false);
+  const isRetrying = ref(false);
+  let retryTimer = null;
 
   const initCamera = async () => {
     try {
@@ -13,19 +15,46 @@ export function useCamera() {
         audio: true
       });
       error.value = null;
+      stopRetry();
       // Sync mute state
       updateMuteState();
     } catch (err) {
       console.error('Error accessing media devices:', err);
-      // More friendy error messages
-      if (err.name === 'NotAllowedError') {
+
+      // Handle the specific case where the camera is busy/occupied
+      const isBusy = err.name === 'NotReadableError' || err.name === 'AbortError' || err.message?.includes('Could not start video source');
+
+      if (isBusy) {
+        error.value = 'Camera is occupied by another tab. Retrying automatically...';
+        startRetry();
+      } else if (err.name === 'NotAllowedError') {
         error.value = 'Camera/Microphone access denied. Please grant permissions and reload.';
+        stopRetry();
       } else if (err.name === 'NotFoundError') {
         error.value = 'No camera or microphone found.';
+        stopRetry();
       } else {
         error.value = `Error accessing devices: ${err.message}`;
+        stopRetry();
       }
     }
+  };
+
+  const startRetry = () => {
+    if (retryTimer || isRetrying.value) return;
+    isRetrying.value = true;
+    retryTimer = setInterval(() => {
+      console.log('Retrying camera access...');
+      initCamera();
+    }, 2000); // Retry every 2 seconds
+  };
+
+  const stopRetry = () => {
+    if (retryTimer) {
+      clearInterval(retryTimer);
+      retryTimer = null;
+    }
+    isRetrying.value = false;
   };
 
   const stopCamera = () => {
@@ -57,6 +86,7 @@ export function useCamera() {
     error,
     isMirrored,
     isMuted,
+    isRetrying,
     initCamera,
     stopCamera,
     toggleMirror,

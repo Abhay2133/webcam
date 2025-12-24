@@ -17,7 +17,8 @@ const {
   isMirrored, 
   toggleMirror,
   isMuted,
-  toggleMute
+  toggleMute,
+  isRetrying
 } = useCamera();
 
 const {
@@ -59,9 +60,10 @@ const dismissError = () => {
 
 <template>
   <div class="stage-container">
-    <div v-if="cameraError && showError" class="error-message">
-      {{ cameraError }}
-      <button @click="dismissError" class="dismiss-btn">×</button>
+    <div v-if="cameraError && showError" class="error-message" :class="{ retrying: isRetrying }">
+      <div v-if="isRetrying" class="retry-spinner"></div>
+      <span class="error-text">{{ cameraError }}</span>
+      <button v-if="!isRetrying" @click="dismissError" class="dismiss-btn" title="Dismiss">×</button>
     </div>
 
     <!-- Main Video Stage -->
@@ -165,6 +167,26 @@ video {
   align-items: center;
   gap: 1rem;
   font-weight: 500;
+}
+
+.error-message.retrying {
+  background: var(--surface-color);
+  color: var(--text-color);
+  border: 1px solid rgba(0,0,0,0.1);
+}
+
+.retry-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: rotate 1s linear infinite;
+}
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 .dismiss-btn {
