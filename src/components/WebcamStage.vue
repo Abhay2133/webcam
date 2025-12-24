@@ -7,6 +7,9 @@ import ControlsOverlay from './ControlsOverlay.vue';
 import VisualizerButton from './VisualizerButton.vue';
 
 const videoElement = ref(null);
+const showError = ref(true);
+const streamReady = ref(false);
+
 const { 
   stream, 
   error: cameraError, 
@@ -26,8 +29,10 @@ const {
   recordedBlobUrl
 } = useRecorder(stream);
 
-const streamReady = computed(() => !!stream.value);
-const showError = ref(true);
+// Track stream readiness
+watch(stream, (newStream) => {
+  streamReady.value = !!newStream;
+}, { immediate: true });
 
 // Visualizer logic (active when stream is ready)
 const { volume, frequencyData } = useAudioVisualizer(stream, streamReady);
