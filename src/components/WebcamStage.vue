@@ -26,10 +26,10 @@ const {
   recordedBlobUrl
 } = useRecorder(stream);
 
-// Visualizer logic (only active when recording)
-const { volume, frequencyData } = useAudioVisualizer(stream, isRecording);
+// Visualizer logic (active when stream is ready)
+const { volume, frequencyData } = useAudioVisualizer(stream, streamReady);
 
-// Computed stream readiness
+const showError = ref(true);
 const streamReady = computed(() => !!stream.value);
 
 onMounted(async () => {
@@ -44,16 +44,19 @@ watch(stream, (newStream) => {
 });
 
 const handleReset = () => {
-  recordedChunks.value = [];
-  // Simple reload to reset state for now
-  window.location.reload(); 
+  resetRecording();
+};
+
+const dismissError = () => {
+  showError.value = false;
 };
 </script>
 
 <template>
   <div class="stage-container">
-    <div v-if="cameraError" class="error-message">
+    <div v-if="cameraError && showError" class="error-message">
       {{ cameraError }}
+      <button @click="dismissError" class="dismiss-btn">×</button>
     </div>
 
     <!-- Main Video Stage -->
@@ -149,10 +152,34 @@ video {
   transform: translateX(-50%);
   color: white;
   background: var(--danger-color);
-  padding: 1rem 2rem;
-  border-radius: 8px;
-  z-index: 50;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  padding: 0.75rem 1.5rem;
+  border-radius: 999px;
+  z-index: 100;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-weight: 500;
+}
+
+.dismiss-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s;
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.dismiss-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
 }
 
 .playback-video {

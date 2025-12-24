@@ -178,27 +178,6 @@ const emit = defineEmits([
   color: var(--text-color);
 }
 
-/* Visualizer Wrapper */
-.mic-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.visualizer-ring {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  border: 2px solid transparent;
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-  transition: transform 0.1s linear, opacity 0.1s linear;
-}
-
 @media (max-width: 768px) {
   .controls-overlay {
     padding-bottom: 1rem;
